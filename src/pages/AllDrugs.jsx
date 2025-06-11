@@ -4,7 +4,7 @@ const AllDrugs = () => {
   return (
     <DrugListPage
       title="كل الأصناف"
-      sheetUrl="https://docs.google.com/spreadsheets/d/1Bvs8RmPRHQHRFeSaf64xCgb_qJ_dry7YLQtSvhzq0hc/gviz/tq?sheet=Sheetgo_Sheet2&tqx=out:json"
+      sheetUrl="https://docs.google.com/spreadsheets/d/1dDNcYxsLP48HCXS-RACAccsMy_HdGlCa25ElYr7oxb8/gviz/tq?sheet=Sheetgo_Sheet2&tqx=out:json"
       idPrefix="drug"
     />
   );
