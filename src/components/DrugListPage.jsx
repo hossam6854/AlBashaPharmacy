@@ -88,6 +88,7 @@ const DrugListPage = ({ title, sheetUrl, idPrefix = "item" }) => {
   );
 
   const handleQuantityChange = useCallback((id, value) => {
+    // اسمح بقيمة فارغة مؤقتًا
     setQuantities((prev) => ({ ...prev, [id]: value }));
   }, []);
 
@@ -96,6 +97,22 @@ const DrugListPage = ({ title, sheetUrl, idPrefix = "item" }) => {
     if (isNaN(qty) || qty < 1) qty = 1;
     if (qty > stock) qty = stock;
     setQuantities((prev) => ({ ...prev, [id]: qty }));
+  }, []);
+
+  const handleIncrement = useCallback((id, stock) => {
+    setQuantities((prev) => {
+      const current = parseInt(prev[id]) || 1;
+      const newQty = current + 1 > stock ? stock : current + 1;
+      return { ...prev, [id]: newQty };
+    });
+  }, []);
+
+  const handleDecrement = useCallback((id) => {
+    setQuantities((prev) => {
+      const current = parseInt(prev[id]) || 1;
+      const newQty = current - 1 < 1 ? 1 : current - 1;
+      return { ...prev, [id]: newQty };
+    });
   }, []);
 
   if (!isOnline || loading || error)
@@ -147,13 +164,7 @@ const DrugListPage = ({ title, sheetUrl, idPrefix = "item" }) => {
             <div className="flex items-center justify-between gap-10 mt-3 md:mt-0">
               <div className="flex items-center gap-2">
                 <button
-                  onClick={() =>
-                    handleQuantityChange(
-                      drug.id,
-                      drug.stock,
-                      (quantities[drug.id] || 1) - 1
-                    )
-                  }
+                  onClick={() => handleDecrement(drug.id)}
                   className="w-10 h-10 bg-green-100 text-green-700 border border-green-300 rounded-md text-xl hover:bg-green-200 active:scale-90 transition duration-200 shadow-sm"
                 >
                   −
@@ -174,13 +185,7 @@ const DrugListPage = ({ title, sheetUrl, idPrefix = "item" }) => {
                 />
 
                 <button
-                  onClick={() =>
-                    handleQuantityChange(
-                      drug.id,
-                      drug.stock,
-                      (quantities[drug.id] || 1) + 1
-                    )
-                  }
+                  onClick={() => handleIncrement(drug.id, drug.stock)}
                   className="w-10 h-10 bg-green-100 text-green-700 border border-green-300 rounded-md text-xl hover:bg-green-200 active:scale-90 transition duration-200 shadow-sm"
                 >
                   +
@@ -251,7 +256,7 @@ const DrugListPage = ({ title, sheetUrl, idPrefix = "item" }) => {
             }
             className="bg-green-600 text-white px-6 py-3 rounded-full shadow-lg hover:bg-green-800 transition cursor-pointer"
           >
-            عرض السلة 🛒
+          🛒  عرض السلة 
           </button>
         </div>
       )}

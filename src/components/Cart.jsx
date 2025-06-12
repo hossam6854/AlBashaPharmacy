@@ -30,28 +30,21 @@ const Cart = () => {
     [items]
   );
 
-  const totalItems = useMemo(
-    () => items.reduce((sum, item) => sum + item.quantity, 0),
-    [items]
-  );
+  const itemNumber = items.length;
 
   useEffect(() => {
     if (items.length > 0) setIsExpanded(true);
   }, [items]);
 
   const generateWhatsAppLink = () => {
-    const message = `طلب جديد من العميل ${customerName}
-  
-    تفاصيل الطلب:
+    const message = `الاسم: ${customerName}
+الطلب:
   ${items
     .map(
       (item) =>
-        `• ${item.name}
-    - الكمية: ${item.quantity}
-    - الخصم: ${item.discount}%\n`
+      `•${item.name} - الكمية${item.quantity} - الخصم${item.discount}%\n`
     )
     .join("")}
-  
 الإجمالي: ${total} ج.م`;
 
     return `https://wa.me/201110759890?text=${encodeURIComponent(message)}`;
@@ -98,7 +91,7 @@ const Cart = () => {
                 سلة الطلبات
               </h2>
               <span className="bg-green-600 text-white px-3 py-1 rounded-full text-sm font-medium">
-                {totalItems} عنصر
+                {itemNumber} عناصر
               </span>
             </div>
 
