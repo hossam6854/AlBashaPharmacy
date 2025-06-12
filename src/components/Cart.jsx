@@ -114,7 +114,7 @@ const Cart = () => {
                     </p>
                   </div>
 
-                  <div className="flex items-center space-x-2 rtl:space-x-reverse w-full sm:w-auto justify-between sm:justify-start gap-2">
+                  <div className="flex items-center space-x-2 rtl:space-x-reverse w-full sm:w-auto gap-10 sm:justify-start">
                     <div className="flex items-center bg-green-50 rounded-lg overflow-hidden">
                       <button
                         onClick={() => handleQuantityChange(item.id, -1)}
