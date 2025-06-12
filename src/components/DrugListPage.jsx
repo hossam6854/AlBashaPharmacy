@@ -123,7 +123,7 @@ const DrugListPage = ({ title, sheetUrl, idPrefix = "item" }) => {
           >
             <div>
               <h3 className="text-xl font-bold text-gray-800">{drug.name}</h3>
-              <div className="flex items-center gap-5 md:gap-10 mt-2 text-sm text-gray-600">
+              <div className="flex items-center gap-3 md:gap-10 mt-2 text-sm text-gray-600">
                 {drug.discount ? (
                   <>
                     <span className="line-through text-gray-400 text-base">

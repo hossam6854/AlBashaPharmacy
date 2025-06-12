@@ -65,7 +65,7 @@ const Navbar = () => {
         </div>
 
         {/* شريط البحث + الروابط */}
-        <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-3">
+        <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-3 pr-5 pl-5">
 
           {/* الروابط + القائمة الجانبية للهاتف */}
           <div className="flex flex-col md:flex-row md:items-center gap-3 w-full md:w-auto">
