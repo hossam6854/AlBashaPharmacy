@@ -123,7 +123,7 @@ const DrugListPage = ({ title, sheetUrl, idPrefix = "item" }) => {
           >
             <div>
               <h3 className="text-xl font-bold text-gray-800">{drug.name}</h3>
-              <div className="flex items-center space-x-4 mt-2 text-sm text-gray-600">
+              <div className="flex items-center gap-10 mt-2 text-sm text-gray-600">
                 {drug.discount ? (
                   <>
                     <span className="line-through text-gray-400 text-base">
@@ -144,7 +144,7 @@ const DrugListPage = ({ title, sheetUrl, idPrefix = "item" }) => {
               </div>
               <p className="text-gray-500 mt-1">الكمية المتاحة: {drug.stock}</p>
             </div>
-            <div className="flex items-center gap-3 mt-3 md:mt-0">
+            <div className="flex items-center justify-between gap-10 mt-3 md:mt-0">
               <div className="flex items-center gap-2">
                 <button
                   onClick={() =>
@@ -190,7 +190,7 @@ const DrugListPage = ({ title, sheetUrl, idPrefix = "item" }) => {
               <button
                 onClick={() => handleAddToCart(drug)}
                 disabled={drug.stock === 0}
-                className={`px-4 py-2 rounded-lg transition-colors flex items-center gap-2 ${
+                className={`px-4 py-2 rounded-lg transition-colors flex items-center gap-2  ${
                   drug.stock === 0
                     ? "bg-gray-400 text-white cursor-not-allowed"
                     : "bg-green-600 text-white hover:bg-green-700"
