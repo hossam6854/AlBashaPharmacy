@@ -105,7 +105,6 @@ const Cart = () => {
     exit={{ opacity: 0, x: -20 }}
     className="relative flex flex-col sm:flex-row justify-between items-start sm:items-center bg-white px-4 py-3 rounded-xl shadow border border-green-100 hover:shadow-md transition-shadow"
   >
-    {/* زر الحذف للجوال فقط - أعلى الكارت على اليمين */}
     <button
       onClick={() => dispatch(removeFromCart(item.id))}
       className="absolute top-2 left-2 text-red-500 hover:text-red-700 transition-colors p-1 sm:hidden"
@@ -113,7 +112,6 @@ const Cart = () => {
       <FiTrash2 size={18} />
     </button>
 
-    {/* الاسم والسعر */}
     <div className="flex-1 min-w-[150px]">
       <span className="text-green-800 font-bold">{item.name}</span>
       <p className="text-sm text-gray-500 mt-1">
@@ -121,9 +119,7 @@ const Cart = () => {
       </p>
     </div>
 
-    {/* عناصر التحكم */}
-    <div className="flex items-center justify-start w-full sm:w-auto mt-2 sm:mt-0 gap-4">
-      {/* التحكم في الكمية */}
+    <div className="flex items-center justify-between w-full sm:w-auto mt-2 sm:mt-0 gap-4">
       <div className="flex items-center bg-green-50 rounded-lg overflow-hidden">
         <button
           onClick={() => handleQuantityChange(item.id, -1)}
@@ -142,12 +138,10 @@ const Cart = () => {
         </button>
       </div>
 
-      {/* السعر الإجمالي */}
       <span className="text-green-700 font-bold min-w-[80px] text-center">
         {(item.price * item.quantity).toFixed(2)} ج.م
       </span>
 
-      {/* زر الحذف للكمبيوتر فقط */}
       <button
         onClick={() => dispatch(removeFromCart(item.id))}
         className="text-red-500 hover:text-red-700 transition-colors p-1 hidden sm:block"
