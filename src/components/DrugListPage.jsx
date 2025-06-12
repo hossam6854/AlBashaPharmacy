@@ -60,19 +60,23 @@ const DrugListPage = ({ title, sheetUrl, idPrefix = "item" }) => {
     return Math.ceil(filteredDrugs.length / drugsPerPage);
   }, [filteredDrugs]);
 
+  const priceAfterDiscount = (drug) =>
+    drug.discount
+      ? Math.max(
+          0,
+          parseFloat((drug.price * (1 - drug.discount / 100)).toFixed(2))
+        )
+      : drug.price;
+
   const handleAddToCart = useCallback(
     (drug) => {
       const rawQty = parseInt(quantities[drug.id]) || 1;
       const validQty = Math.max(1, Math.min(rawQty, drug.stock));
       if (drug.stock === 0) return;
 
-      const priceAfterDiscount = drug.discount
-        ? parseFloat((drug.price * (1 - drug.discount / 100)).toFixed(2))
-        : drug.price;
-
       const updatedItem = {
         ...drug,
-        price: priceAfterDiscount,
+        price: priceAfterDiscount(drug),
         quantity: validQty,
       };
 
@@ -122,7 +126,7 @@ const DrugListPage = ({ title, sheetUrl, idPrefix = "item" }) => {
                       {drug.price.toFixed(2)} ج.م
                     </span>
                     <span className="text-green-700 font-bold text-lg ml-3">
-                      {(drug.price * (1 - drug.discount / 100)).toFixed(2)} ج.م
+                      {priceAfterDiscount(drug).toFixed(2)} ج.م
                     </span>
                     <span className="text-red-500 font-bold bg-red-100 px-2 py-0.5 rounded-full ml-2">
                       خصم {drug.discount}%
@@ -137,18 +141,46 @@ const DrugListPage = ({ title, sheetUrl, idPrefix = "item" }) => {
               <p className="text-gray-500 mt-1">الكمية المتاحة: {drug.stock}</p>
             </div>
             <div className="flex items-center gap-3 mt-3 md:mt-0">
-              <input
-                type="number"
-                inputMode="numeric"
-                pattern="\d*"
-                min="1"
-                max={drug.stock}
-                value={quantities[drug.id] || 1}
-                onChange={(e) =>
-                  handleQuantityChange(drug.id, drug.stock, e.target.value)
-                }
-                className="w-20 p-2 border border-gray-300 rounded-lg text-center appearance-none"
-              />
+              <div className="flex items-center gap-2">
+                <button
+                  onClick={() =>
+                    handleQuantityChange(
+                      drug.id,
+                      drug.stock,
+                      (quantities[drug.id] || 1) - 1
+                    )
+                  }
+                  className="w-10 h-10 bg-green-100 text-green-700 border border-green-300 rounded-md text-xl hover:bg-green-200 active:scale-90 transition duration-200 shadow-sm"
+                >
+                  −
+                </button>
+
+                <input
+                  type="tel"
+                  inputMode="numeric"
+                  min="1"
+                  max={drug.stock}
+                  value={quantities[drug.id] || 1}
+                  onChange={(e) =>
+                    handleQuantityChange(drug.id, drug.stock, e.target.value)
+                  }
+                  className="w-14 h-10 text-center border border-green-300 rounded-md shadow-sm focus:ring-2 focus:ring-green-500 focus:outline-none text-lg text-green-800 bg-white"
+                />
+
+                <button
+                  onClick={() =>
+                    handleQuantityChange(
+                      drug.id,
+                      drug.stock,
+                      (quantities[drug.id] || 1) + 1
+                    )
+                  }
+                  className="w-10 h-10 bg-green-100 text-green-700 border border-green-300 rounded-md text-xl hover:bg-green-200 active:scale-90 transition duration-200 shadow-sm"
+                >
+                  +
+                </button>
+              </div>
+
               <button
                 onClick={() => handleAddToCart(drug)}
                 disabled={drug.stock === 0}
