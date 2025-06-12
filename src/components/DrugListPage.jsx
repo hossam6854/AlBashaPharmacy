@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState, useRef } from "react";
 import { FiCheckCircle, FiChevronLeft, FiChevronRight } from "react-icons/fi";
 import useFetchSheetData from "../hooks/useFetchSheetData";
 import { useDispatch, useSelector } from "react-redux";
@@ -17,6 +17,10 @@ const DrugListPage = ({ title, sheetUrl, idPrefix = "item" }) => {
   const [toastMessage, setToastMessage] = useState("");
   const [showToast, setShowToast] = useState(false);
   const [isOnline, setIsOnline] = useState(navigator.onLine);
+  const [isAtCartSection, setIsAtCartSection] = useState(false);
+  const cartRef = useRef(null);
+
+
 
   const drugsPerPage = 10;
 
@@ -83,6 +87,11 @@ const DrugListPage = ({ title, sheetUrl, idPrefix = "item" }) => {
       dispatch(addToCart(updatedItem));
       setToastMessage(`تم الإضافه إلى السلة`);
       setShowToast(true);
+      if (cartRef.current) {
+        const rect = cartRef.current.getBoundingClientRect();
+        const atCart = rect.top < window.innerHeight && rect.bottom > 0;
+        setIsAtCartSection(atCart);
+      }
     },
     [quantities, dispatch]
   );
@@ -113,6 +122,20 @@ const DrugListPage = ({ title, sheetUrl, idPrefix = "item" }) => {
       const newQty = current - 1 < 1 ? 1 : current - 1;
       return { ...prev, [id]: newQty };
     });
+  }, []);
+
+  useEffect(() => {
+    const checkCartPosition = () => {
+      if (cartRef.current) {
+        const rect = cartRef.current.getBoundingClientRect();
+        // تحقق إذا كان قسم السلة مرئي في الشاشة
+        setIsAtCartSection(rect.top < window.innerHeight && rect.bottom > 0);
+      }
+    };
+
+    checkCartPosition();
+    window.addEventListener('scroll', checkCartPosition);
+    return () => window.removeEventListener('scroll', checkCartPosition);
   }, []);
 
   if (!isOnline || loading || error)
@@ -245,7 +268,12 @@ const DrugListPage = ({ title, sheetUrl, idPrefix = "item" }) => {
         </div>
       )}
 
-      {cartItems.length > 0 && (
+<div ref={cartRef}>
+        <Cart />
+      </div>
+
+      {/* عرض زر السلة فقط إذا كان هناك عناصر ولم يكن المستخدم في قسم السلة */}
+      {cartItems.length > 0 && !isAtCartSection && (
         <div className="fixed bottom-4 right-4 z-50">
           <button
             onClick={() =>
@@ -256,12 +284,11 @@ const DrugListPage = ({ title, sheetUrl, idPrefix = "item" }) => {
             }
             className="bg-green-600 text-white px-6 py-3 rounded-full shadow-lg hover:bg-green-800 transition cursor-pointer"
           >
-          🛒  عرض السلة 
+            🛒 عرض السلة
           </button>
         </div>
       )}
 
-      <Cart />
       {showToast && (
         <Toast message={toastMessage} onClose={() => setShowToast(false)} />
       )}
