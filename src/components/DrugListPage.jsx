@@ -87,7 +87,11 @@ const DrugListPage = ({ title, sheetUrl, idPrefix = "item" }) => {
     [quantities, dispatch]
   );
 
-  const handleQuantityChange = useCallback((id, stock, value) => {
+  const handleQuantityChange = useCallback((id, value) => {
+    setQuantities((prev) => ({ ...prev, [id]: value }));
+  }, []);
+
+  const handleQuantityBlur = useCallback((id, stock, value) => {
     let qty = parseInt(value);
     if (isNaN(qty) || qty < 1) qty = 1;
     if (qty > stock) qty = stock;
@@ -158,11 +162,13 @@ const DrugListPage = ({ title, sheetUrl, idPrefix = "item" }) => {
                 <input
                   type="tel"
                   inputMode="numeric"
-                  min="1"
                   max={drug.stock}
-                  value={quantities[drug.id] || 1}
+                  value={quantities[drug.id] ?? 1}
                   onChange={(e) =>
-                    handleQuantityChange(drug.id, drug.stock, e.target.value)
+                    handleQuantityChange(drug.id, e.target.value)
+                  }
+                  onBlur={(e) =>
+                    handleQuantityBlur(drug.id, drug.stock, e.target.value)
                   }
                   className="w-14 h-10 text-center border border-green-300 rounded-md shadow-sm focus:ring-2 focus:ring-green-500 focus:outline-none text-lg text-green-800 bg-white"
                 />
