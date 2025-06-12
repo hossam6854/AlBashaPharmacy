@@ -1,9 +1,5 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
-import {
-  FiCheckCircle,
-  FiChevronLeft,
-  FiChevronRight,
-} from "react-icons/fi";
+import { FiCheckCircle, FiChevronLeft, FiChevronRight } from "react-icons/fi";
 import useFetchSheetData from "../hooks/useFetchSheetData";
 import { useDispatch, useSelector } from "react-redux";
 import { addToCart } from "../redux/cartSlice";
@@ -22,10 +18,13 @@ const DrugListPage = ({ title, sheetUrl, idPrefix = "item" }) => {
   const [showToast, setShowToast] = useState(false);
   const [isOnline, setIsOnline] = useState(navigator.onLine);
 
-
   const drugsPerPage = 10;
 
-  const { data: drugs, loading, error } = useFetchSheetData(sheetUrl, (rows) =>
+  const {
+    data: drugs,
+    loading,
+    error,
+  } = useFetchSheetData(sheetUrl, (rows) =>
     rows.map((row, index) => ({
       ...row,
       id: `${idPrefix}${index + 1}`,
@@ -61,17 +60,28 @@ const DrugListPage = ({ title, sheetUrl, idPrefix = "item" }) => {
     return Math.ceil(filteredDrugs.length / drugsPerPage);
   }, [filteredDrugs]);
 
-  const handleAddToCart = useCallback((drug) => {
-    const rawQty = parseInt(quantities[drug.id]) || 1;
-    const validQty = Math.max(1, Math.min(rawQty, drug.stock));
-    if (drug.stock === 0) return;
+  const handleAddToCart = useCallback(
+    (drug) => {
+      const rawQty = parseInt(quantities[drug.id]) || 1;
+      const validQty = Math.max(1, Math.min(rawQty, drug.stock));
+      if (drug.stock === 0) return;
 
-    const updatedItem = { ...drug, quantity: validQty };
+      const priceAfterDiscount = drug.discount
+        ? parseFloat((drug.price * (1 - drug.discount / 100)).toFixed(2))
+        : drug.price;
 
-    dispatch(addToCart(updatedItem));
-    setToastMessage(`✔ تم إضافة ${drug.name} (${validQty}) إلى السلة`);
-    setShowToast(true);
-  }, [quantities, dispatch]);
+      const updatedItem = {
+        ...drug,
+        price: priceAfterDiscount,
+        quantity: validQty,
+      };
+
+      dispatch(addToCart(updatedItem));
+      setToastMessage(`تم الإضافه إلى السلة`);
+      setShowToast(true);
+    },
+    [quantities, dispatch]
+  );
 
   const handleQuantityChange = useCallback((id, stock, value) => {
     let qty = parseInt(value);
@@ -81,11 +91,19 @@ const DrugListPage = ({ title, sheetUrl, idPrefix = "item" }) => {
   }, []);
 
   if (!isOnline || loading || error)
-    return <FullPageLoader isError={!!error || !isOnline} onRetry={() => window.location.reload()} />;
-  
+    return (
+      <FullPageLoader
+        isError={!!error || !isOnline}
+        onRetry={() => window.location.reload()}
+      />
+    );
+
   return (
-    <div className="min-h-screen bg-gradient-to-br from-green-100 via-green-50 to-green-200 p-4 md:p-8" dir="rtl">
-      <div className="mb-20 text-center">
+    <div
+      className="min-h-screen bg-gradient-to-br from-green-100 via-green-50 to-green-200 p-4 md:p-8"
+      dir="rtl"
+    >
+      <div className="mb-10 text-center">
         <h1 className="text-4xl font-extrabold text-green-800">{title}</h1>
       </div>
 
@@ -98,12 +116,21 @@ const DrugListPage = ({ title, sheetUrl, idPrefix = "item" }) => {
             <div>
               <h3 className="text-xl font-bold text-gray-800">{drug.name}</h3>
               <div className="flex items-center space-x-4 mt-2 text-sm text-gray-600">
-                <span className="text-green-600 font-bold text-lg">
-                  {drug.price} ج.م
-                </span>
-                {drug.discount && (
-                  <span className="text-red-500 font-bold bg-red-100 px-2 py-0.5 rounded-full">
-                    خصم {drug.discount}%
+                {drug.discount ? (
+                  <>
+                    <span className="line-through text-gray-400 text-base">
+                      {drug.price.toFixed(2)} ج.م
+                    </span>
+                    <span className="text-green-700 font-bold text-lg ml-3">
+                      {(drug.price * (1 - drug.discount / 100)).toFixed(2)} ج.م
+                    </span>
+                    <span className="text-red-500 font-bold bg-red-100 px-2 py-0.5 rounded-full ml-2">
+                      خصم {drug.discount}%
+                    </span>
+                  </>
+                ) : (
+                  <span className="text-green-600 font-bold text-lg">
+                    {drug.price.toFixed(2)} ج.م
                   </span>
                 )}
               </div>
@@ -112,11 +139,15 @@ const DrugListPage = ({ title, sheetUrl, idPrefix = "item" }) => {
             <div className="flex items-center gap-3 mt-3 md:mt-0">
               <input
                 type="number"
+                inputMode="numeric"
+                pattern="\d*"
                 min="1"
                 max={drug.stock}
                 value={quantities[drug.id] || 1}
-                onChange={(e) => handleQuantityChange(drug.id, drug.stock, e.target.value)}
-                className="w-16 p-2 border border-gray-300 rounded-lg text-center"
+                onChange={(e) =>
+                  handleQuantityChange(drug.id, drug.stock, e.target.value)
+                }
+                className="w-20 p-2 border border-gray-300 rounded-lg text-center appearance-none"
               />
               <button
                 onClick={() => handleAddToCart(drug)}
@@ -160,7 +191,9 @@ const DrugListPage = ({ title, sheetUrl, idPrefix = "item" }) => {
           ))}
 
           <button
-            onClick={() => setCurrentPage((prev) => Math.min(prev + 1, totalPages))}
+            onClick={() =>
+              setCurrentPage((prev) => Math.min(prev + 1, totalPages))
+            }
             disabled={currentPage === totalPages}
             className="p-2 rounded-lg border border-gray-300 mx-1 disabled:opacity-50"
           >
@@ -173,7 +206,10 @@ const DrugListPage = ({ title, sheetUrl, idPrefix = "item" }) => {
         <div className="fixed bottom-4 right-4 z-50">
           <button
             onClick={() =>
-              window.scrollTo({ top: document.body.scrollHeight, behavior: "smooth" })
+              window.scrollTo({
+                top: document.body.scrollHeight,
+                behavior: "smooth",
+              })
             }
             className="bg-green-600 text-white px-6 py-3 rounded-full shadow-lg hover:bg-green-800 transition cursor-pointer"
           >
@@ -183,7 +219,9 @@ const DrugListPage = ({ title, sheetUrl, idPrefix = "item" }) => {
       )}
 
       <Cart />
-      {showToast && <Toast message={toastMessage} onClose={() => setShowToast(false)} />}
+      {showToast && (
+        <Toast message={toastMessage} onClose={() => setShowToast(false)} />
+      )}
     </div>
   );
 };

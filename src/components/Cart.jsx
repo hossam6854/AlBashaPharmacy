@@ -1,20 +1,20 @@
 // components/Cart.js
-import { useState, useEffect, useMemo } from 'react';
-import { useSelector, useDispatch } from 'react-redux';
+import { useState, useEffect, useMemo } from "react";
+import { useSelector, useDispatch } from "react-redux";
 import {
   removeFromCart,
   setCustomerName,
   clearCart,
   updateQuantity,
-} from '../redux/cartSlice';
+} from "../redux/cartSlice";
 import {
   FiSend,
   FiTrash2,
   FiPlus,
   FiMinus,
   FiShoppingCart,
-} from 'react-icons/fi';
-import { motion, AnimatePresence } from 'framer-motion';
+} from "react-icons/fi";
+import { motion, AnimatePresence } from "framer-motion";
 
 const Cart = () => {
   const { items, customerName } = useSelector((state) => state.cart);
@@ -23,7 +23,10 @@ const Cart = () => {
   const [isAnimating, setIsAnimating] = useState(false);
 
   const total = useMemo(
-    () => items.reduce((sum, item) => sum + item.price * item.quantity, 0),
+    () =>
+      items
+        .reduce((sum, item) => sum + item.price * item.quantity, 0)
+        .toFixed(2),
     [items]
   );
 
@@ -37,14 +40,19 @@ const Cart = () => {
   }, [items]);
 
   const generateWhatsAppLink = () => {
-    const message = `مرحبا، أنا ${customerName} وأرغب في طلب:\n${items
-      .map(
-        (item) =>
-          `${item.name} - عدد ${item.quantity} - السعر: ${
-            item.price * item.quantity
-          } ج.م`
-      )
-      .join('\n')}\n\nالإجمالي: ${total} ج.م`;
+    const message = `طلب جديد من العميل ${customerName}
+  
+    تفاصيل الطلب:
+  ${items
+    .map(
+      (item) =>
+        `• ${item.name}
+    - الكمية: ${item.quantity}
+    - الخصم: ${item.discount}%\n`
+    )
+    .join("")}
+  
+الإجمالي: ${total} ج.م`;
 
     return `https://wa.me/201110759890?text=${encodeURIComponent(message)}`;
   };
@@ -52,7 +60,7 @@ const Cart = () => {
   const handleSend = () => {
     if (!customerName.trim()) return;
 
-    window.open(generateWhatsAppLink(), '_blank');
+    window.open(generateWhatsAppLink(), "_blank");
     setIsAnimating(true);
     setTimeout(() => {
       dispatch(clearCart());
@@ -105,13 +113,15 @@ const Cart = () => {
                   className="flex flex-col sm:flex-row justify-between items-start sm:items-center bg-white px-4 py-3 rounded-xl shadow border border-green-100 hover:shadow-md transition-shadow space-y-2 sm:space-y-0"
                 >
                   <div className="text-gray-800 font-semibold">
-                    <span className="text-green-800 font-bold">{item.name}</span>
+                    <span className="text-green-800 font-bold">
+                      {item.name}
+                    </span>
                     <p className="text-sm text-gray-500 mt-1">
                       {item.price} ج.م للواحد
                     </p>
                   </div>
 
-                  <div className="flex items-center space-x-2 rtl:space-x-reverse w-full sm:w-auto justify-between sm:justify-start">
+                  <div className="flex items-center space-x-2 rtl:space-x-reverse w-full sm:w-auto justify-between sm:justify-start gap-2">
                     <div className="flex items-center bg-green-50 rounded-lg overflow-hidden">
                       <button
                         onClick={() => handleQuantityChange(item.id, -1)}
@@ -129,9 +139,8 @@ const Cart = () => {
                         <FiPlus size={16} />
                       </button>
                     </div>
-
                     <span className="text-green-700 font-bold min-w-[60px] text-left">
-                      {item.price * item.quantity} ج.م
+                      {(item.price * item.quantity).toFixed(2)} ج.م
                     </span>
 
                     <button
@@ -170,8 +179,8 @@ const Cart = () => {
               className={`w-full py-3 rounded-xl flex items-center justify-center gap-2 font-bold text-white transition-colors
                 ${
                   customerName.trim()
-                    ? 'bg-green-600 hover:bg-green-700'
-                    : 'bg-gray-300 cursor-not-allowed'
+                    ? "bg-green-600 hover:bg-green-700"
+                    : "bg-gray-300 cursor-not-allowed"
                 }`}
             >
               <FiSend />

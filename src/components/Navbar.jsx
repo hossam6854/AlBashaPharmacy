@@ -79,7 +79,7 @@ const Navbar = () => {
                 }`}
               >
                 <AiOutlineMedicineBox className="ml-2" />
-                كل الأدوية
+                كل الأصناف
               </Link>
 
               <Link
@@ -102,8 +102,7 @@ const Navbar = () => {
                     : "hover:bg-green-100 text-green-900"
                 }`}
               >
-                <span className="text-white ml-2">%</span>
-                العروض والتخفيضات
+         % العروض والتخفيضات
               </Link>
             </div>
           </div>
