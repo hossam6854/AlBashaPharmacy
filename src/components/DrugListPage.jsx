@@ -140,7 +140,7 @@ const DrugListPage = ({ title, sheetUrl, idPrefix = "item" }) => {
           >
             <div>
               <h3 className="text-xl font-bold text-gray-800">{drug.name}</h3>
-              <div className="flex items-center gap-3 md:gap-10 mt-2 text-sm text-gray-600">
+              <div className="flex items-center gap-2 md:gap-10 mt-2 text-sm text-gray-600">
                 {drug.discount ? (
                   <>
                     <span className="line-through text-gray-400 text-base">
@@ -149,7 +149,7 @@ const DrugListPage = ({ title, sheetUrl, idPrefix = "item" }) => {
                     <span className="text-green-700 font-bold text-lg ml-3">
                       {priceAfterDiscount(drug).toFixed(2)} ج.م
                     </span>
-                    <span className="text-red-500 font-bold bg-red-100 px-2 py-0.5 rounded-full ml-2">
+                    <span className="text-red-500 font-bold bg-red-100 px-2 py-0.5 rounded-full">
                       خصم {drug.discount}%
                     </span>
                   </>
