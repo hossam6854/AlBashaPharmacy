@@ -81,9 +81,9 @@ const Cart = () => {
           animate={{ opacity: 1, y: 0 }}
           exit={{ opacity: 0, y: 20 }}
           transition={{ duration: 0.3 }}
-          className="mt-8 w-full px-4 md:px-8"
+          className="mt-8 w-full md:px-8"
         >
-          <div className="bg-white p-5 sm:p-6 rounded-2xl shadow-lg border border-green-200 max-w-4xl mx-auto">
+          <div className="bg-white p-3 sm:p-6 rounded-2xl shadow-lg border border-green-200 max-w-4xl mx-auto">
             {/* العنوان */}
             <div className="flex justify-between items-center mb-5">
               <h2 className="text-2xl font-extrabold text-green-800 flex items-center gap-2">
@@ -96,7 +96,7 @@ const Cart = () => {
             </div>
 
             {/* العناصر */}
-            <div className="max-h-72 overflow-y-auto pr-1 sm:pr-2 mb-6 space-y-3 custom-scrollbar">
+            <div className="max-h-72 overflow-y-auto sm:pr-2 mb-6 space-y-3 custom-scrollbar">
               {items.map((item) => (
                 <motion.div
                   key={item.id}
