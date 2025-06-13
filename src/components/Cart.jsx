@@ -163,7 +163,7 @@ const Cart = () => {
             <div className="mb-4 relative">
               <input
                 type="text"
-                placeholder="اكتب اسمك لإرسال الطلب"
+                placeholder="ادخل اسم صيدليتك"
                 value={customerName}
                 onChange={(e) => dispatch(setCustomerName(e.target.value))}
                 className="w-full p-3 pr-12 rounded-xl border border-gray-300 focus:ring-2 focus:ring-green-400 focus:outline-none placeholder:text-gray-400 text-right bg-white"
