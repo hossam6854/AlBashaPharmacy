@@ -20,8 +20,6 @@ const DrugListPage = ({ title, sheetUrl, idPrefix = "item" }) => {
   const [isAtCartSection, setIsAtCartSection] = useState(false);
   const cartRef = useRef(null);
 
-
-
   const drugsPerPage = 10;
 
   const {
@@ -134,8 +132,8 @@ const DrugListPage = ({ title, sheetUrl, idPrefix = "item" }) => {
     };
 
     checkCartPosition();
-    window.addEventListener('scroll', checkCartPosition);
-    return () => window.removeEventListener('scroll', checkCartPosition);
+    window.addEventListener("scroll", checkCartPosition);
+    return () => window.removeEventListener("scroll", checkCartPosition);
   }, []);
 
   if (!isOnline || loading || error)
@@ -167,7 +165,7 @@ const DrugListPage = ({ title, sheetUrl, idPrefix = "item" }) => {
                 {drug.discount ? (
                   <>
                     <span className="line-through text-gray-400 text-base">
-                      {drug.price.toFixed(2)} ج.م
+                      {drug.price?.toFixed(2) || 0} ج.م
                     </span>
                     <span className="text-green-700 font-bold text-lg">
                       {priceAfterDiscount(drug).toFixed(2)} ج.م
@@ -268,7 +266,7 @@ const DrugListPage = ({ title, sheetUrl, idPrefix = "item" }) => {
         </div>
       )}
 
-<div ref={cartRef}>
+      <div ref={cartRef}>
         <Cart />
       </div>
 

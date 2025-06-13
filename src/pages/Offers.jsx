@@ -4,7 +4,7 @@ const Offers = () => {
     return (
       <DrugListPage
         title="العروض المتوفرة"
-        sheetUrl="https://docs.google.com/spreadsheets/d/16Q6UO1akorwAXFs2QR9aJxTHOaHxzpNlCTM_EL0adP4/gviz/tq?sheet=Sheetgo_Sheet2&tqx=out:json"
+        sheetUrl="https://docs.google.com/spreadsheets/d/1kjFu4FhxEd3vk7OStWUv9WsoJ1PO5IAyGmxb9ii_zwU/gviz/tq?sheet=Sheetgo_Sheet2&tqx=out:json"
         idPrefix="offer"
       />
     );
