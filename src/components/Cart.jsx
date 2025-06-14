@@ -37,7 +37,7 @@ const Cart = () => {
   }, [items]);
 
   const generateWhatsAppLink = () => {
-    const message = `الاسم: ${customerName}
+    const message = `صيدلية: ${customerName}
 الطلب:
   ${items
     .map(
@@ -47,7 +47,7 @@ const Cart = () => {
     .join("")}
 الإجمالي: ${total} ج.م`;
 
-    return `https://wa.me/201110759890?text=${encodeURIComponent(message)}`;
+    return `https://wa.me/201221053058?text=${encodeURIComponent(message)}`;
   };
 
   const handleSend = () => {
