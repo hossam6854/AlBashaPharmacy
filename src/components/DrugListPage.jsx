@@ -160,7 +160,7 @@ const DrugListPage = ({ title, sheetUrl, idPrefix = "item" }) => {
             className="bg-white rounded-xl shadow-md p-5 flex flex-col md:flex-row md:items-center justify-between border-r-4 border-green-600 relative"
           >
             <div>
-              <h3 className="text-xl font-bold text-gray-800">{drug.name}</h3>
+              <h3 className="text-xl font-bold text-gray-800">{drug.name || ""}</h3>
               <div className="flex items-center gap-2 md:gap-10 mt-2 text-sm text-gray-600">
                 {drug.discount ? (
                   <>
@@ -171,16 +171,16 @@ const DrugListPage = ({ title, sheetUrl, idPrefix = "item" }) => {
                       {priceAfterDiscount(drug).toFixed(2)} ج.م
                     </span>
                     <span className="text-red-500 font-bold bg-red-100 px-2 py-0.5 rounded-full">
-                      خصم {drug.discount}%
+                      خصم {drug.discount ? drug.discount : 0}%
                     </span>
                   </>
                 ) : (
                   <span className="text-green-600 font-bold text-lg">
-                    {drug.price.toFixed(2)} ج.م
+                    {drug.price?.toFixed(2) || 0} ج.م
                   </span>
                 )}
               </div>
-              <p className="text-gray-500 mt-1">الكمية المتاحة: {drug.stock}</p>
+              <p className="text-gray-500 mt-1">الكمية المتاحة: {drug.stock || 0}</p>
             </div>
             <div className="flex items-center justify-between gap-10 mt-3 md:mt-0">
               <div className="flex items-center gap-2">
