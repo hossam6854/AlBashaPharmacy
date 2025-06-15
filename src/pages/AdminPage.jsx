@@ -4,7 +4,7 @@ import ExcelUploader from "../components/ExcelUploader";
 import { FiLogOut, FiLock, FiUploadCloud, FiShield } from "react-icons/fi";
 
 const ADMIN_PASSWORD_HASH =
-  "ea9cb2343d77b05a9cc4bd5014f49c89251d54507eb0a236c22895f8c3bc7571";
+  "80439244e16fc65b16891cea15954f00ec09bc40d55d86f709fb5bf0f0df2fb3";
 
 const AdminPage = () => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
