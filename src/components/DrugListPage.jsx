@@ -18,6 +18,8 @@ const DrugListPage = ({ title, sheetUrl, idPrefix = "item" }) => {
   const [showToast, setShowToast] = useState(false);
   const [isOnline, setIsOnline] = useState(navigator.onLine);
   const [isAtCartSection, setIsAtCartSection] = useState(false);
+  const [pageGroupStart, setPageGroupStart] = useState(1);
+  const maxVisiblePages = 5;
   const cartRef = useRef(null);
 
   const drugsPerPage = 10;
@@ -95,7 +97,6 @@ const DrugListPage = ({ title, sheetUrl, idPrefix = "item" }) => {
   );
 
   const handleQuantityChange = useCallback((id, value) => {
-    // اسمح بقيمة فارغة مؤقتًا
     setQuantities((prev) => ({ ...prev, [id]: value }));
   }, []);
 
@@ -160,7 +161,9 @@ const DrugListPage = ({ title, sheetUrl, idPrefix = "item" }) => {
             className="bg-white rounded-xl shadow-md p-5 flex flex-col md:flex-row md:items-center justify-between border-r-4 border-green-600 relative"
           >
             <div>
-              <h3 className="text-xl font-bold text-gray-800">{drug.name || ""}</h3>
+              <h3 className="text-xl font-bold text-gray-800">
+                {drug.name || ""}
+              </h3>
               <div className="flex items-center gap-2 md:gap-10 mt-2 text-sm text-gray-600">
                 {drug.discount ? (
                   <>
@@ -180,7 +183,9 @@ const DrugListPage = ({ title, sheetUrl, idPrefix = "item" }) => {
                   </span>
                 )}
               </div>
-              <p className="text-gray-500 mt-1">الكمية المتاحة: {drug.stock || 0}</p>
+              <p className="text-gray-500 mt-1">
+                الكمية المتاحة: {drug.stock || 0}
+              </p>
             </div>
             <div className="flex items-center justify-between gap-10 mt-3 md:mt-0">
               <div className="flex items-center gap-2">
@@ -219,7 +224,7 @@ const DrugListPage = ({ title, sheetUrl, idPrefix = "item" }) => {
                 className={`px-4 py-2 rounded-lg transition-colors flex items-center gap-2  ${
                   drug.stock === 0
                     ? "bg-gray-400 text-white cursor-not-allowed"
-                    : "bg-green-600 text-white hover:bg-green-700"
+                    : "bg-green-600 text-white hover:bg-green-700 cursor-pointer"
                 }`}
               >
                 <FiCheckCircle className="text-lg" />
@@ -231,35 +236,47 @@ const DrugListPage = ({ title, sheetUrl, idPrefix = "item" }) => {
       </div>
 
       {filteredDrugs.length > drugsPerPage && (
-        <div className="flex justify-center my-6">
+        <div className="flex justify-center my-6 flex-wrap gap-1">
           <button
-            onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
-            disabled={currentPage === 1}
-            className="p-2 rounded-lg border border-gray-300 mx-1 disabled:opacity-50"
+            onClick={() => {
+              const newStart = Math.max(1, pageGroupStart - maxVisiblePages);
+              setPageGroupStart(newStart);
+              setCurrentPage(newStart);
+            }}
+            disabled={pageGroupStart === 1}
+            className="p-2 rounded-lg border border-gray-300 disabled:opacity-50 cursor-pointer disabled:cursor-not-allowed"
           >
             <FiChevronRight />
           </button>
 
-          {Array.from({ length: totalPages }, (_, i) => i + 1).map((number) => (
-            <button
-              key={number}
-              onClick={() => setCurrentPage(number)}
-              className={`p-2 px-4 rounded-lg mx-1 ${
-                currentPage === number
-                  ? "bg-green-600 text-white"
-                  : "border border-gray-300"
-              }`}
-            >
-              {number}
-            </button>
-          ))}
+          {Array.from({ length: maxVisiblePages }, (_, i) => {
+            const pageNumber = pageGroupStart + i;
+            if (pageNumber > totalPages) return null;
+            return (
+              <button
+                key={pageNumber}
+                onClick={() => setCurrentPage(pageNumber)}
+                className={`p-2 px-4 rounded-lg ${
+                  currentPage === pageNumber
+                    ? "bg-green-600 text-white"
+                    : "border border-gray-300 cursor-pointer"
+                }`}
+              >
+                {pageNumber}
+              </button>
+            );
+          })}
 
           <button
-            onClick={() =>
-              setCurrentPage((prev) => Math.min(prev + 1, totalPages))
-            }
-            disabled={currentPage === totalPages}
-            className="p-2 rounded-lg border border-gray-300 mx-1 disabled:opacity-50"
+            onClick={() => {
+              const newStart = pageGroupStart + maxVisiblePages;
+              if (newStart <= totalPages) {
+                setPageGroupStart(newStart);
+                setCurrentPage(newStart);
+              }
+            }}
+            disabled={pageGroupStart + maxVisiblePages > totalPages}
+            className="p-2 rounded-lg border border-gray-300 disabled:opacity-50 cursor-pointer disabled:cursor-not-allowed"
           >
             <FiChevronLeft />
           </button>
@@ -270,7 +287,6 @@ const DrugListPage = ({ title, sheetUrl, idPrefix = "item" }) => {
         <Cart />
       </div>
 
-      {/* عرض زر السلة فقط إذا كان هناك عناصر ولم يكن المستخدم في قسم السلة */}
       {cartItems.length > 0 && !isAtCartSection && (
         <div className="fixed bottom-4 right-4 z-50">
           <button

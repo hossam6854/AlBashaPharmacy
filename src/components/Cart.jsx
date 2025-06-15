@@ -1,4 +1,3 @@
-// components/Cart.js
 import { useState, useEffect, useMemo } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import {
@@ -42,7 +41,7 @@ const Cart = () => {
   ${items
     .map(
       (item) =>
-      `•${item.name} - الكمية${item.quantity} - الخصم${item.discount}%\n`
+        `•${item.name} - الكمية${item.quantity} - الخصم${item.discount}%\n`
     )
     .join("")}
 الإجمالي: ${total} ج.م`;
@@ -84,7 +83,6 @@ const Cart = () => {
           className="mt-8 w-full md:px-8"
         >
           <div className="bg-white p-3 sm:p-6 rounded-2xl shadow-lg border border-green-200 max-w-4xl mx-auto">
-            {/* العنوان */}
             <div className="flex justify-between items-center mb-5">
               <h2 className="text-2xl font-extrabold text-green-800 flex items-center gap-2">
                 <FiShoppingCart className="text-green-600" />
@@ -95,71 +93,72 @@ const Cart = () => {
               </span>
             </div>
 
+            <div className="max-h-72 overflow-y-auto sm:pr-2 mb-6 space-y-3 custom-scrollbar">
+              {" "}
+              {/* العناصر */}
+              {items.map((item) => (
+                <motion.div
+                  key={item.id}
+                  initial={{ opacity: 0, x: 20 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  exit={{ opacity: 0, x: -20 }}
+                  className="relative flex flex-col sm:flex-row justify-between items-start sm:items-center bg-white px-4 py-3 rounded-xl shadow border border-green-100 hover:shadow-md transition-shadow"
+                >
+                  <button
+                    onClick={() => dispatch(removeFromCart(item.id))}
+                    className="absolute top-2 left-2 text-red-500 hover:text-red-700 transition-colors p-1 sm:hidden"
+                  >
+                    <FiTrash2 size={18} />
+                  </button>
 
-            <div className="max-h-72 overflow-y-auto sm:pr-2 mb-6 space-y-3 custom-scrollbar">          {/* العناصر */}
-          {items.map((item) => (
-  <motion.div
-    key={item.id}
-    initial={{ opacity: 0, x: 20 }}
-    animate={{ opacity: 1, x: 0 }}
-    exit={{ opacity: 0, x: -20 }}
-    className="relative flex flex-col sm:flex-row justify-between items-start sm:items-center bg-white px-4 py-3 rounded-xl shadow border border-green-100 hover:shadow-md transition-shadow"
-  >
-    <button
-      onClick={() => dispatch(removeFromCart(item.id))}
-      className="absolute top-2 left-2 text-red-500 hover:text-red-700 transition-colors p-1 sm:hidden"
-    >
-      <FiTrash2 size={18} />
-    </button>
+                  <div className="flex-1 min-w-[150px]">
+                    <span className="text-green-800 font-bold">
+                      {item.name}
+                    </span>
+                    <p className="text-sm text-gray-500 mt-1">
+                      {item.price} ج.م للواحد
+                    </p>
+                  </div>
 
-    <div className="flex-1 min-w-[150px]">
-      <span className="text-green-800 font-bold">{item.name}</span>
-      <p className="text-sm text-gray-500 mt-1">
-        {item.price} ج.م للواحد
-      </p>
-    </div>
+                  <div className="flex items-center justify-between w-full sm:w-auto mt-2 sm:mt-0 gap-4">
+                    <div className="flex items-center bg-green-50 rounded-lg overflow-hidden">
+                      <button
+                        onClick={() => handleQuantityChange(item.id, -1)}
+                        className="px-3 py-1 text-green-600 hover:bg-green-100 transition-colors"
+                      >
+                        <FiMinus size={16} />
+                      </button>
+                      <span className="px-3 text-green-800 font-semibold">
+                        {item.quantity}
+                      </span>
+                      <button
+                        onClick={() => handleQuantityChange(item.id, 1)}
+                        className="px-3 py-1 text-green-600 hover:bg-green-100 transition-colors"
+                      >
+                        <FiPlus size={16} />
+                      </button>
+                    </div>
 
-    <div className="flex items-center justify-between w-full sm:w-auto mt-2 sm:mt-0 gap-4">
-      <div className="flex items-center bg-green-50 rounded-lg overflow-hidden">
-        <button
-          onClick={() => handleQuantityChange(item.id, -1)}
-          className="px-3 py-1 text-green-600 hover:bg-green-100 transition-colors"
-        >
-          <FiMinus size={16} />
-        </button>
-        <span className="px-3 text-green-800 font-semibold">
-          {item.quantity}
-        </span>
-        <button
-          onClick={() => handleQuantityChange(item.id, 1)}
-          className="px-3 py-1 text-green-600 hover:bg-green-100 transition-colors"
-        >
-          <FiPlus size={16} />
-        </button>
-      </div>
+                    <span className="text-green-700 font-bold min-w-[80px] text-center">
+                      {(item.price * item.quantity).toFixed(2)} ج.م
+                    </span>
 
-      <span className="text-green-700 font-bold min-w-[80px] text-center">
-        {(item.price * item.quantity).toFixed(2)} ج.م
-      </span>
+                    <button
+                      onClick={() => dispatch(removeFromCart(item.id))}
+                      className="text-red-500 hover:text-red-700 transition-colors p-1 hidden sm:block"
+                    >
+                      <FiTrash2 size={18} />
+                    </button>
+                  </div>
+                </motion.div>
+              ))}
+            </div>
 
-      <button
-        onClick={() => dispatch(removeFromCart(item.id))}
-        className="text-red-500 hover:text-red-700 transition-colors p-1 hidden sm:block"
-      >
-        <FiTrash2 size={18} />
-      </button>
-    </div>
-  </motion.div>
-))}
-</div>
-
-            {/* الإجمالي */}
             <div className="flex justify-between items-center font-bold text-lg text-gray-800 mb-5 px-1 border-t pt-4">
               <span>الإجمالي:</span>
               <span className="text-green-700">{total} ج.م</span>
             </div>
 
-            {/* الاسم */}
             <div className="mb-4 relative">
               <input
                 type="text"
@@ -170,7 +169,6 @@ const Cart = () => {
               />
             </div>
 
-            {/* زر الإرسال */}
             <motion.button
               whileTap={{ scale: 0.98 }}
               onClick={handleSend}

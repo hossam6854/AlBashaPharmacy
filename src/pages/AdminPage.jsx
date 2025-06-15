@@ -1,102 +1,183 @@
 import { useEffect, useState } from "react";
 import sha256 from "js-sha256";
-import UploadExcelForm from "../components/AdminUploadPage";
+import ExcelUploader from "../components/ExcelUploader";
+import { FiLogOut, FiLock, FiUploadCloud, FiShield } from "react-icons/fi";
 
-// ✅ هذا هو الهاش الصحيح لكلمة السر: admin123
 const ADMIN_PASSWORD_HASH =
-  "240be518fabd2724ddb6f04eeb1da5967448d7e831c08c8fa822809f74c720a9";
+  "ea9cb2343d77b05a9cc4bd5014f49c89251d54507eb0a236c22895f8c3bc7571";
 
 const AdminPage = () => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [password, setPassword] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
     const isAdmin = localStorage.getItem("isAdmin") === "true";
-    setIsAuthenticated(isAdmin);
+    const expiry = parseInt(localStorage.getItem("adminExpiry") || "0");
+    if (isAdmin && Date.now() < expiry) {
+      setIsAuthenticated(true);
+    }
   }, []);
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
+    setIsLoading(true);
+
+    await new Promise((resolve) => setTimeout(resolve, 800));
 
     const hash = sha256(password.trim());
 
     if (hash === ADMIN_PASSWORD_HASH) {
+      const expiryTime = Date.now() + 30 * 24 * 60 * 60 * 1000;
       localStorage.setItem("isAdmin", "true");
+      localStorage.setItem("adminExpiry", expiryTime.toString());
       setIsAuthenticated(true);
     } else {
-      alert("كلمة السر غير صحيحة");
+      alert("❌ كلمة السر غير صحيحة");
       setPassword("");
     }
+
+    setIsLoading(false);
   };
 
   const handleLogout = () => {
     localStorage.removeItem("isAdmin");
+    localStorage.removeItem("adminExpiry");
     setIsAuthenticated(false);
     setPassword("");
   };
 
   if (!isAuthenticated) {
     return (
-      <div className="flex items-center justify-center h-screen bg-gray-100">
+      <div
+        className="flex items-center justify-center min-h-screen bg-gradient-to-br from-indigo-50 to-blue-100"
+        dir="rtl"
+      >
         <form
           onSubmit={handleSubmit}
-          className="bg-white p-6 rounded shadow-md w-80"
+          className="bg-white p-8 rounded-xl shadow-lg w-96 space-y-6 border border-gray-200"
         >
-          <h2 className="text-xl font-semibold text-center mb-4 text-red-700">
-            دخول الأدمن
-          </h2>
-          <input
-            type="password"
-            placeholder="كلمة السر"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            className="w-full px-3 py-2 border rounded mb-4"
-            autoFocus
-          />
-          <button
-            type="submit"
-            className="w-full bg-red-600 text-white py-2 rounded hover:bg-red-700"
-          >
-            دخول
-          </button>
+          <div className="text-center space-y-2">
+            <div className="flex justify-center">
+              <FiShield className="text-4xl text-indigo-600" />
+            </div>
+            <h2 className="text-2xl font-bold text-gray-800">
+              نظام إدارة الأدوية
+            </h2>
+            <p className="text-gray-500 text-sm">
+              الرجاء إدخال كلمة المرور للوصول إلى لوحة التحكم
+            </p>
+          </div>
+
+          <div className="space-y-4">
+            <div className="relative">
+              <div className="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
+                <FiLock className="text-gray-400" />
+              </div>
+              <input
+                type="password"
+                placeholder="كلمة المرور"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                className="w-full px-4 py-3 pr-10 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+                autoFocus
+                required
+              />
+            </div>
+
+            <button
+              type="submit"
+              disabled={isLoading}
+              className={`w-full flex justify-center items-center gap-2 bg-indigo-600 text-white py-3 rounded-lg hover:bg-indigo-700 transition-all cursor-pointer ${
+                isLoading ? "opacity-70 cursor-not-allowed" : ""
+              }`}
+            >
+              {isLoading ? (
+                <>
+                  <svg
+                    className="animate-spin -ml-1 mr-2 h-4 w-4 text-white"
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                  >
+                    <circle
+                      className="opacity-25"
+                      cx="12"
+                      cy="12"
+                      r="10"
+                      stroke="currentColor"
+                      strokeWidth="4"
+                    ></circle>
+                    <path
+                      className="opacity-75"
+                      fill="currentColor"
+                      d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                    ></path>
+                  </svg>
+                  جاري التحقق...
+                </>
+              ) : (
+                <>
+                  <FiLock className="text-sm" />
+                  دخول
+                </>
+              )}
+            </button>
+          </div>
+
+          <div className="text-center text-xs text-gray-400 pt-4 border-t border-gray-100">
+            نظام آمن ومحمي بكلمة مرور قوية
+          </div>
         </form>
       </div>
     );
   }
 
   return (
-    <div className="p-8 bg-gray-100 min-h-screen">
-      <div className="flex justify-between items-center mb-6">
-        <h1 className="text-2xl font-bold text-red-700">لوحة تحكم الأدمن</h1>
-        <button
-          onClick={handleLogout}
-          className="text-sm bg-red-500 text-white px-3 py-1 rounded"
-        >
-          تسجيل الخروج
-        </button>
+    <div className="p-6 bg-gray-50 min-h-screen space-y-8" dir="rtl">
+      {/* Header */}
+      <div className="bg-white rounded-xl shadow-sm p-6 border border-gray-200">
+        <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+          <div className="space-y-2">
+            <h1 className="text-3xl font-bold text-indigo-700 flex items-center gap-2">
+              <FiShield className="text-indigo-500" />
+              لوحة تحكم الأدمن
+            </h1>
+          </div>
+
+          <button
+            onClick={handleLogout}
+            className="flex items-center gap-2 text-sm bg-red-100 text-red-700 px-4 py-2 rounded-lg hover:bg-red-200 transition-all cursor-pointer"
+          >
+            <FiLogOut className="text-sm" />
+            تسجيل الخروج
+          </button>
+        </div>
       </div>
 
-      <section className="bg-white p-4 rounded shadow">
-  <h2 className="font-semibold text-lg mb-2 text-indigo-700">
-    رفع AllDrugs
-  </h2>
-  <UploadExcelForm uploadUrl="https://script.google.com/macros/s/AKfycbwRgCjWNg4t95AWDD-0nyy-_yqcDwzp2ZfBA-wlsws5w8jakTJ1losTsFznc5vSEbeo/exec" />
-</section>
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <div className="lg:col-span-3">
+          <h2 className="text-xl font-semibold text-gray-800 mb-4 flex items-center gap-2">
+            <FiUploadCloud className="text-indigo-500" />
+            تحديث قواعد البيانات
+          </h2>
+        </div>
 
-<section className="bg-white p-4 rounded shadow">
-  <h2 className="font-semibold text-lg mb-2 text-indigo-700">
-    رفع NewArrivals
-  </h2>
-  <UploadExcelForm uploadUrl="https://script.google.com/macros/s/AKfycbyFtjKKAeuB1mDqVhNClaSUe8PKlovPU9b_fSAjhofHH4MMVbrevr6nwebqOrTBk_UG/exec" />
-</section>
+        <ExcelUploader
+          label="تحديث بيانات (كل الاصناف)"
+          uploadUrl="https://script.google.com/macros/s/AKfycbwRgCjWNg4t95AWDD-0nyy-_yqcDwzp2ZfBA-wlsws5w8jakTJ1losTsFznc5vSEbeo/exec"
+        />
 
-<section className="bg-white p-4 rounded shadow">
-  <h2 className="font-semibold text-lg mb-2 text-indigo-700">
-    رفع Offers
-  </h2>
-  <UploadExcelForm uploadUrl="https://script.google.com/macros/s/AKfycbzu6ZTY9RmB0LvhrmnEPGN5L_n5eYUDPO4GNn4QRAvXzmFRV3dZub_FU_nkVYfzEGoz/exec" />
-</section>
+        <ExcelUploader
+          label="تحديث بيانات (الوارد حديثا)"
+          uploadUrl="https://script.google.com/macros/s/AKfycbyFtjKKAeuB1mDqVhNClaSUe8PKlovPU9b_fSAjhofHH4MMVbrevr6nwebqOrTBk_UG/exec"
+        />
 
+        <ExcelUploader
+          label="تحديث بيانات (العروض)"
+          uploadUrl="https://script.google.com/macros/s/AKfycbzu6ZTY9RmB0LvhrmnEPGN5L_n5eYUDPO4GNn4QRAvXzmFRV3dZub_FU_nkVYfzEGoz/exec"
+        />
+      </div>
     </div>
   );
 };

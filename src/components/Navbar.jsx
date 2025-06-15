@@ -2,7 +2,11 @@ import { useState, useEffect } from "react";
 import { FiSearch } from "react-icons/fi";
 import { HiOutlineMenuAlt3 } from "react-icons/hi";
 import { AiOutlineClose, AiOutlineMedicineBox } from "react-icons/ai";
-import { MdLocalPharmacy, MdHealthAndSafety } from "react-icons/md";
+import {
+  MdLocalPharmacy,
+  MdHealthAndSafety,
+  MdAdminPanelSettings,
+} from "react-icons/md";
 import { Link, useLocation } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { setSearchQuery } from "../redux/searchSlice";
@@ -39,9 +43,11 @@ const Navbar = () => {
   }, [location.pathname]);
 
   return (
-    <nav className="bg-white text-green-900 shadow-md sticky top-0 z-50 font-tajawal" dir="rtl">
+    <nav
+      className="bg-white text-green-900 shadow-md sticky top-0 z-50 font-tajawal"
+      dir="rtl"
+    >
       <div className="container mx-auto px-4 py-3 flex flex-col gap-3">
-
         {/* الجزء العلوي: الاسم في اليمين وزر القائمة في اليسار على الموبايل */}
         <div className="flex items-center justify-between md:flex-col md:items-center md:gap-2">
           {/* اسم الصيدلية */}
@@ -66,7 +72,6 @@ const Navbar = () => {
 
         {/* شريط البحث + الروابط */}
         <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-3 pr-5 pl-5">
-
           {/* الروابط + القائمة الجانبية للهاتف */}
           <div className="flex flex-col md:flex-row md:items-center gap-3 w-full md:w-auto">
             <div className={`${isOpen ? "block" : "hidden"} md:flex gap-2`}>
@@ -102,20 +107,20 @@ const Navbar = () => {
                     : "hover:bg-green-100 text-green-900"
                 }`}
               >
-         % العروض والتخفيضات
+                % العروض والتخفيضات
               </Link>
-            </div>
-            <Link
+              <Link
                 to="/admin"
                 className={`flex items-center px-4 py-2 rounded-lg text-sm font-medium transition ${
                   currentPath === "/admin"
-                    ? "bg-green-600 text-white shadow"
-                    : "hover:bg-green-100 text-green-900"
+                    ? "bg-indigo-400 text-white shadow"
+                    : "hover:bg-indigo-50 text-indigo-900"
                 }`}
               >
-                <MdHealthAndSafety className="ml-2" />
+                <MdAdminPanelSettings className="ml-2" />
                 لوحة تحكم الأدمن
               </Link>
+            </div>
           </div>
 
           {/* شريط البحث */}

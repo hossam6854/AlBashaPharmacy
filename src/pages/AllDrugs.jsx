@@ -13,6 +13,3 @@ const AllDrugs = () => {
 };
 
 export default AllDrugs;
-
-
-
