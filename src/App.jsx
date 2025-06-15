@@ -9,6 +9,7 @@ import AllDrugs from "./pages/AllDrugs";
 import NewArrivals from "./pages/NewArrivals";
 import Offers from "./pages/Offers";
 import FullPageLoader from "./components/FullPageLoader";
+import AdminPage from "./pages/AdminPage";
 import { useEffect, useState } from "react";
 
 // مكون فرعي يحتوي على كل ما يعتمد على useLocation
@@ -33,6 +34,7 @@ function AppContent() {
         <Route path="/" element={<AllDrugs />} />
         <Route path="/new" element={<NewArrivals />} />
         <Route path="/offers" element={<Offers />} />
+        <Route path="/admin" element={<AdminPage />} />
       </Routes>
     </>
   );
