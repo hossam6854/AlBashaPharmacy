@@ -42,7 +42,6 @@ const DrugListPage = ({ title, sheetUrl, idPrefix = "item" }) => {
     const checkOnlineStatus = () => setIsOnline(navigator.onLine);
     window.addEventListener("online", checkOnlineStatus);
     window.addEventListener("offline", checkOnlineStatus);
-
     return () => {
       window.removeEventListener("online", checkOnlineStatus);
       window.removeEventListener("offline", checkOnlineStatus);
@@ -55,14 +54,21 @@ const DrugListPage = ({ title, sheetUrl, idPrefix = "item" }) => {
     );
   }, [drugs, searchQuery]);
 
+  const totalPages = useMemo(() => {
+    return Math.ceil(filteredDrugs.length / drugsPerPage);
+  }, [filteredDrugs]);
+
+  useEffect(() => {
+    if (currentPage > totalPages || currentPage !== 1) {
+      setCurrentPage(1);
+      setPageGroupStart(1);
+    }
+  }, [searchQuery, filteredDrugs.length]);
+
   const currentDrugs = useMemo(() => {
     const start = (currentPage - 1) * drugsPerPage;
     return filteredDrugs.slice(start, start + drugsPerPage);
   }, [filteredDrugs, currentPage]);
-
-  const totalPages = useMemo(() => {
-    return Math.ceil(filteredDrugs.length / drugsPerPage);
-  }, [filteredDrugs]);
 
   const priceAfterDiscount = (drug) =>
     drug.discount
@@ -127,11 +133,9 @@ const DrugListPage = ({ title, sheetUrl, idPrefix = "item" }) => {
     const checkCartPosition = () => {
       if (cartRef.current) {
         const rect = cartRef.current.getBoundingClientRect();
-        // تحقق إذا كان قسم السلة مرئي في الشاشة
         setIsAtCartSection(rect.top < window.innerHeight && rect.bottom > 0);
       }
     };
-
     checkCartPosition();
     window.addEventListener("scroll", checkCartPosition);
     return () => window.removeEventListener("scroll", checkCartPosition);
@@ -146,10 +150,7 @@ const DrugListPage = ({ title, sheetUrl, idPrefix = "item" }) => {
     );
 
   return (
-    <div
-      className="min-h-screen bg-gradient-to-br from-green-100 via-green-50 to-green-200 md:p-8"
-      dir="rtl"
-    >
+    <div className="min-h-screen bg-gradient-to-br from-green-100 via-green-50 to-green-200 md:p-8" dir="rtl">
       <div className="mb-10 text-center">
         <h1 className="text-4xl font-extrabold text-green-800">{title}</h1>
       </div>
@@ -161,9 +162,7 @@ const DrugListPage = ({ title, sheetUrl, idPrefix = "item" }) => {
             className="bg-white rounded-xl shadow-md p-5 flex flex-col md:flex-row md:items-center justify-between border-r-4 border-green-600 relative"
           >
             <div>
-              <h3 className="text-xl font-bold text-gray-800">
-                {drug.name || ""}
-              </h3>
+              <h3 className="text-xl font-bold text-gray-800">{drug.name || ""}</h3>
               <div className="flex items-center gap-2 md:gap-10 mt-2 text-sm text-gray-600">
                 {drug.discount ? (
                   <>
@@ -174,7 +173,7 @@ const DrugListPage = ({ title, sheetUrl, idPrefix = "item" }) => {
                       {priceAfterDiscount(drug).toFixed(2)} ج.م
                     </span>
                     <span className="text-red-500 font-bold bg-red-100 px-2 py-0.5 rounded-full">
-                      خصم {drug.discount ? drug.discount : 0}%
+                      خصم {drug.discount || 0}%
                     </span>
                   </>
                 ) : (
@@ -183,10 +182,9 @@ const DrugListPage = ({ title, sheetUrl, idPrefix = "item" }) => {
                   </span>
                 )}
               </div>
-              <p className="text-gray-500 mt-1">
-                الكمية المتاحة: {drug.stock || 0}
-              </p>
+              <p className="text-gray-500 mt-1">الكمية المتاحة: {drug.stock || 0}</p>
             </div>
+
             <div className="flex items-center justify-between gap-10 mt-3 md:mt-0">
               <div className="flex items-center gap-2">
                 <button
@@ -201,12 +199,8 @@ const DrugListPage = ({ title, sheetUrl, idPrefix = "item" }) => {
                   inputMode="numeric"
                   max={drug.stock}
                   value={quantities[drug.id] ?? 1}
-                  onChange={(e) =>
-                    handleQuantityChange(drug.id, e.target.value)
-                  }
-                  onBlur={(e) =>
-                    handleQuantityBlur(drug.id, drug.stock, e.target.value)
-                  }
+                  onChange={(e) => handleQuantityChange(drug.id, e.target.value)}
+                  onBlur={(e) => handleQuantityBlur(drug.id, drug.stock, e.target.value)}
                   className="w-14 h-10 text-center border border-green-300 rounded-md shadow-sm focus:ring-2 focus:ring-green-500 focus:outline-none text-lg text-green-800 bg-white"
                 />
 
@@ -303,9 +297,7 @@ const DrugListPage = ({ title, sheetUrl, idPrefix = "item" }) => {
         </div>
       )}
 
-      {showToast && (
-        <Toast message={toastMessage} onClose={() => setShowToast(false)} />
-      )}
+      {showToast && <Toast message={toastMessage} onClose={() => setShowToast(false)} />}
     </div>
   );
 };
