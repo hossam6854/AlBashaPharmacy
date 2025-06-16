@@ -151,8 +151,8 @@ const DrugListPage = ({ title, sheetUrl, idPrefix = "item" }) => {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-green-100 via-green-50 to-green-200 md:p-8" dir="rtl">
-      <div className="mb-10 text-center">
-        <h1 className="text-4xl font-extrabold text-green-800">{title}</h1>
+      <div className="md:mb-10 mb-2 mt-2 text-center">
+        <h1 className="md:text-4xl text-3xl font-extrabold text-green-800">{title}</h1>
       </div>
 
       <div className="space-y-4 mb-12">
@@ -280,6 +280,26 @@ const DrugListPage = ({ title, sheetUrl, idPrefix = "item" }) => {
       <div ref={cartRef}>
         <Cart />
       </div>
+
+      <div className="text-center mt-5 space-y-2">
+  <p className="text-sm text-gray-600">هل تحتاج مساعدة؟ تواصل معنا مباشرة:</p>
+  <div className="flex justify-center gap-4">
+    <a
+      href="tel:01018964205"
+      className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-xl text-sm font-bold transition"
+    >
+      اتصال مباشر
+    </a>
+    <a
+      href="https://wa.me/201018964205"
+      target="_blank"
+      rel="noopener noreferrer"
+      className="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-xl text-sm font-bold transition"
+    >
+      واتساب
+    </a>
+  </div>
+</div>
 
       {cartItems.length > 0 && !isAtCartSection && (
         <div className="fixed bottom-4 right-4 z-50">

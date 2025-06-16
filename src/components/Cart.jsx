@@ -46,7 +46,7 @@ const Cart = () => {
     .join("")}
 الإجمالي: ${total} ج.م`;
 
-    return `https://wa.me/201221053058?text=${encodeURIComponent(message)}`;
+    return `https://wa.me/?text=${encodeURIComponent(message)}`;
   };
 
   const handleSend = () => {
