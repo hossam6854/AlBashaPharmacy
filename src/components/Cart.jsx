@@ -64,10 +64,14 @@ const Cart = () => {
   const handleQuantityChange = (id, change) => {
     const item = items.find((i) => i.id === id);
     if (!item) return;
+    
     const newQuantity = item.quantity + change;
-    if (newQuantity > 0) {
-      dispatch(updateQuantity({ id, quantity: newQuantity }));
-    }
+    
+    // التحقق من الحد الأدنى (1) والحد الأقصى (stock)
+    if (newQuantity < 1) return;
+    if (item.stock && newQuantity > item.stock) return;
+    
+    dispatch(updateQuantity({ id, quantity: newQuantity }));
   };
 
   if (items.length === 0 && !isAnimating) return null;
@@ -94,8 +98,6 @@ const Cart = () => {
             </div>
 
             <div className="max-h-72 overflow-y-auto sm:pr-2 mb-6 space-y-3 custom-scrollbar">
-              {" "}
-              {/* العناصر */}
               {items.map((item) => (
                 <motion.div
                   key={item.id}
@@ -117,6 +119,11 @@ const Cart = () => {
                     </span>
                     <p className="text-sm text-gray-500 mt-1">
                       {item.price} ج.م للواحد
+                      {item.stock && (
+                        <span className="text-gray-400 text-xs mr-2">
+                          (المتاح: {item.stock})
+                        </span>
+                      )}
                     </p>
                   </div>
 
@@ -124,7 +131,12 @@ const Cart = () => {
                     <div className="flex items-center bg-green-50 rounded-lg overflow-hidden">
                       <button
                         onClick={() => handleQuantityChange(item.id, -1)}
-                        className="px-3 py-1 text-green-600 hover:bg-green-100 transition-colors"
+                        disabled={item.quantity <= 1}
+                        className={`px-3 py-1 transition-colors ${
+                          item.quantity <= 1
+                            ? "text-gray-400 cursor-not-allowed"
+                            : "text-green-600 hover:bg-green-100"
+                        }`}
                       >
                         <FiMinus size={16} />
                       </button>
@@ -133,7 +145,12 @@ const Cart = () => {
                       </span>
                       <button
                         onClick={() => handleQuantityChange(item.id, 1)}
-                        className="px-3 py-1 text-green-600 hover:bg-green-100 transition-colors"
+                        disabled={item.stock && item.quantity >= item.stock}
+                        className={`px-3 py-1 transition-colors ${
+                          item.stock && item.quantity >= item.stock
+                            ? "text-gray-400 cursor-not-allowed"
+                            : "text-green-600 hover:bg-green-100"
+                        }`}
                       >
                         <FiPlus size={16} />
                       </button>
