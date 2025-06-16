@@ -1,5 +1,11 @@
 import { useCallback, useEffect, useMemo, useState, useRef } from "react";
-import { FiCheckCircle, FiChevronLeft, FiChevronRight } from "react-icons/fi";
+import {
+  FiCheckCircle,
+  FiChevronLeft,
+  FiChevronRight,
+  FiPhoneCall,
+  FiMessageCircle,
+} from "react-icons/fi";
 import useFetchSheetData from "../hooks/useFetchSheetData";
 import { useDispatch, useSelector } from "react-redux";
 import { addToCart } from "../redux/cartSlice";
@@ -150,9 +156,14 @@ const DrugListPage = ({ title, sheetUrl, idPrefix = "item" }) => {
     );
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-green-100 via-green-50 to-green-200 md:p-8" dir="rtl">
+    <div
+      className="min-h-screen bg-gradient-to-br from-green-100 via-green-50 to-green-200 md:p-8"
+      dir="rtl"
+    >
       <div className="md:mb-10 mb-2 mt-2 text-center">
-        <h1 className="md:text-4xl text-3xl font-extrabold text-green-800">{title}</h1>
+        <h1 className="md:text-4xl text-3xl font-extrabold text-green-800">
+          {title}
+        </h1>
       </div>
 
       <div className="space-y-4 mb-12">
@@ -162,7 +173,9 @@ const DrugListPage = ({ title, sheetUrl, idPrefix = "item" }) => {
             className="bg-white rounded-xl shadow-md p-5 flex flex-col md:flex-row md:items-center justify-between border-r-4 border-green-600 relative"
           >
             <div>
-              <h3 className="text-xl font-bold text-gray-800">{drug.name || ""}</h3>
+              <h3 className="text-xl font-bold text-gray-800">
+                {drug.name || ""}
+              </h3>
               <div className="flex items-center gap-2 md:gap-10 mt-2 text-sm text-gray-600">
                 {drug.discount ? (
                   <>
@@ -182,7 +195,9 @@ const DrugListPage = ({ title, sheetUrl, idPrefix = "item" }) => {
                   </span>
                 )}
               </div>
-              <p className="text-gray-500 mt-1">الكمية المتاحة: {drug.stock || 0}</p>
+              <p className="text-gray-500 mt-1">
+                الكمية المتاحة: {drug.stock || 0}
+              </p>
             </div>
 
             <div className="flex items-center justify-between gap-10 mt-3 md:mt-0">
@@ -199,8 +214,12 @@ const DrugListPage = ({ title, sheetUrl, idPrefix = "item" }) => {
                   inputMode="numeric"
                   max={drug.stock}
                   value={quantities[drug.id] ?? 1}
-                  onChange={(e) => handleQuantityChange(drug.id, e.target.value)}
-                  onBlur={(e) => handleQuantityBlur(drug.id, drug.stock, e.target.value)}
+                  onChange={(e) =>
+                    handleQuantityChange(drug.id, e.target.value)
+                  }
+                  onBlur={(e) =>
+                    handleQuantityBlur(drug.id, drug.stock, e.target.value)
+                  }
                   className="w-14 h-10 text-center border border-green-300 rounded-md shadow-sm focus:ring-2 focus:ring-green-500 focus:outline-none text-lg text-green-800 bg-white"
                 />
 
@@ -281,25 +300,29 @@ const DrugListPage = ({ title, sheetUrl, idPrefix = "item" }) => {
         <Cart />
       </div>
 
-      <div className="text-center mt-5 space-y-2">
-  <p className="text-sm text-gray-600">هل تحتاج مساعدة؟ تواصل معنا مباشرة:</p>
-  <div className="flex justify-center gap-4">
-    <a
-      href="tel:01018964205"
-      className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-xl text-sm font-bold transition"
-    >
-      اتصال مباشر
-    </a>
-    <a
-      href="https://wa.me/201018964205"
-      target="_blank"
-      rel="noopener noreferrer"
-      className="bg-green-600 hover:bg-green-700 text-white px-6 py-2 rounded-xl text-sm font-bold transition"
-    >
-      واتساب
-    </a>
-  </div>
-</div>
+      <div className="text-center mt-8 space-y-3">
+        <p className="text-base text-gray-700 font-medium">
+          هل تحتاج مساعدة؟ نحن هنا لخدمتك
+        </p>
+        <div className="flex justify-center flex-wrap gap-4 mt-2">
+          <a
+            href="tel:01018964205"
+            className="flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white px-5 py-2.5 rounded-full shadow-lg transition-all duration-200 text-sm sm:text-base font-semibold"
+          >
+            <FiPhoneCall className="text-white" size={18} />
+            اتصال مباشر
+          </a>
+          <a
+            href="https://wa.me/201018964205"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="flex items-center gap-2 bg-green-600 hover:bg-green-700 text-white px-5 py-2.5 rounded-full shadow-lg transition-all duration-200 text-sm sm:text-base font-semibold"
+          >
+            <FiMessageCircle className="text-white" size={18} />
+            واتساب
+          </a>
+        </div>
+      </div>
 
       {cartItems.length > 0 && !isAtCartSection && (
         <div className="fixed bottom-4 right-4 z-50">
@@ -317,7 +340,9 @@ const DrugListPage = ({ title, sheetUrl, idPrefix = "item" }) => {
         </div>
       )}
 
-      {showToast && <Toast message={toastMessage} onClose={() => setShowToast(false)} />}
+      {showToast && (
+        <Toast message={toastMessage} onClose={() => setShowToast(false)} />
+      )}
     </div>
   );
 };
