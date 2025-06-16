@@ -294,7 +294,7 @@ const DrugListPage = ({ title, sheetUrl, idPrefix = "item" }) => {
       href="https://wa.me/201018964205"
       target="_blank"
       rel="noopener noreferrer"
-      className="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-xl text-sm font-bold transition"
+      className="bg-green-600 hover:bg-green-700 text-white px-6 py-2 rounded-xl text-sm font-bold transition"
     >
       واتساب
     </a>
