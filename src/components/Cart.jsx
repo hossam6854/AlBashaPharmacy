@@ -41,7 +41,9 @@ const Cart = () => {
   ${items
     .map(
       (item) =>
-        `•${item.name} - الكمية${item.quantity} - الخصم${item.discount}%\n`
+      `•${item.name} 
+      -الكمية${item.quantity}
+      - الخصم${item.discount}%\n`
     )
     .join("")}
 الإجمالي: ${total} ج.م`;
