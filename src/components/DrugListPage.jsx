@@ -13,6 +13,71 @@ import Toast from "./Toast";
 import FullPageLoader from "./FullPageLoader";
 import Cart from "./Cart";
 
+const PageGroup = ({
+  filteredDrugs,
+  drugsPerPage,
+  currentPage,
+  setCurrentPage,
+  pageGroupStart,
+  setPageGroupStart,
+  maxVisiblePages,
+  totalPages,
+}) => {
+
+
+  return (
+    <>
+    {filteredDrugs.length > drugsPerPage && (
+      <div className="flex justify-center my-6 flex-wrap gap-1">
+        <button
+          onClick={() => {
+            const newStart = Math.max(1, pageGroupStart - maxVisiblePages);
+            setPageGroupStart(newStart);
+            setCurrentPage(newStart);
+          }}
+          disabled={pageGroupStart === 1}
+          className="p-2 rounded-lg border border-gray-300 disabled:opacity-50 cursor-pointer disabled:cursor-not-allowed"
+        >
+          <FiChevronRight />
+        </button>
+
+        {Array.from({ length: maxVisiblePages }, (_, i) => {
+          const pageNumber = pageGroupStart + i;
+          if (pageNumber > totalPages) return null;
+          return (
+            <button
+              key={pageNumber}
+              onClick={() => setCurrentPage(pageNumber)}
+              className={`p-2 px-4 rounded-lg ${
+                currentPage === pageNumber
+                  ? "bg-green-600 text-white"
+                  : "border border-gray-300 cursor-pointer"
+              }`}
+            >
+              {pageNumber}
+            </button>
+          );
+        })}
+
+        <button
+          onClick={() => {
+            const newStart = pageGroupStart + maxVisiblePages;
+            if (newStart <= totalPages) {
+              setPageGroupStart(newStart);
+              setCurrentPage(newStart);
+            }
+          }}
+          disabled={pageGroupStart + maxVisiblePages > totalPages}
+          className="p-2 rounded-lg border border-gray-300 disabled:opacity-50 cursor-pointer disabled:cursor-not-allowed"
+        >
+          <FiChevronLeft />
+        </button>
+      </div>
+    )}
+    </>
+  );
+};
+
 const DrugListPage = ({ title, sheetUrl, idPrefix = "item" }) => {
   const dispatch = useDispatch();
   const searchQuery = useSelector((state) => state.search.query);
@@ -28,7 +93,7 @@ const DrugListPage = ({ title, sheetUrl, idPrefix = "item" }) => {
   const maxVisiblePages = 5;
   const cartRef = useRef(null);
 
-  const drugsPerPage = 10;
+  const drugsPerPage = 50;
 
   const {
     data: drugs,
@@ -166,6 +231,17 @@ const DrugListPage = ({ title, sheetUrl, idPrefix = "item" }) => {
         </h1>
       </div>
 
+      <PageGroup
+        filteredDrugs={filteredDrugs}
+        drugsPerPage={drugsPerPage}
+        currentPage={currentPage}
+        setCurrentPage={setCurrentPage}
+        pageGroupStart={pageGroupStart}
+        setPageGroupStart={setPageGroupStart}
+        maxVisiblePages={maxVisiblePages}
+        totalPages={totalPages}
+      />
+
       <div className="space-y-4 mb-12">
         {currentDrugs.map((drug) => (
           <div
@@ -248,53 +324,18 @@ const DrugListPage = ({ title, sheetUrl, idPrefix = "item" }) => {
         ))}
       </div>
 
-      {filteredDrugs.length > drugsPerPage && (
-        <div className="flex justify-center my-6 flex-wrap gap-1">
-          <button
-            onClick={() => {
-              const newStart = Math.max(1, pageGroupStart - maxVisiblePages);
-              setPageGroupStart(newStart);
-              setCurrentPage(newStart);
-            }}
-            disabled={pageGroupStart === 1}
-            className="p-2 rounded-lg border border-gray-300 disabled:opacity-50 cursor-pointer disabled:cursor-not-allowed"
-          >
-            <FiChevronRight />
-          </button>
+      <PageGroup
+        filteredDrugs={filteredDrugs}
+        drugsPerPage={drugsPerPage}
+        currentPage={currentPage}
+        setCurrentPage={setCurrentPage}
+        pageGroupStart={pageGroupStart}
+        setPageGroupStart={setPageGroupStart}
+        maxVisiblePages={maxVisiblePages}
+        totalPages={totalPages}
+      />
 
-          {Array.from({ length: maxVisiblePages }, (_, i) => {
-            const pageNumber = pageGroupStart + i;
-            if (pageNumber > totalPages) return null;
-            return (
-              <button
-                key={pageNumber}
-                onClick={() => setCurrentPage(pageNumber)}
-                className={`p-2 px-4 rounded-lg ${
-                  currentPage === pageNumber
-                    ? "bg-green-600 text-white"
-                    : "border border-gray-300 cursor-pointer"
-                }`}
-              >
-                {pageNumber}
-              </button>
-            );
-          })}
-
-          <button
-            onClick={() => {
-              const newStart = pageGroupStart + maxVisiblePages;
-              if (newStart <= totalPages) {
-                setPageGroupStart(newStart);
-                setCurrentPage(newStart);
-              }
-            }}
-            disabled={pageGroupStart + maxVisiblePages > totalPages}
-            className="p-2 rounded-lg border border-gray-300 disabled:opacity-50 cursor-pointer disabled:cursor-not-allowed"
-          >
-            <FiChevronLeft />
-          </button>
-        </div>
-      )}
+      
 
       <div ref={cartRef}>
         <Cart />

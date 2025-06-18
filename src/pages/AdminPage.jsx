@@ -165,17 +165,17 @@ const AdminPage = () => {
 
         <ExcelUploader
           label="تحديث بيانات (كل الاصناف)"
-          uploadUrl="https://script.google.com/macros/s/AKfycbwRgCjWNg4t95AWDD-0nyy-_yqcDwzp2ZfBA-wlsws5w8jakTJ1losTsFznc5vSEbeo/exec"
+          uploadUrl="https://script.google.com/macros/s/AKfycbyoLVKvxoydlEqgo36llysK0iG6SzE5DsQnhTKtc-ig77JWoC6t-Dj6ze2vLN0vQj9b/exec"
         />
 
         <ExcelUploader
           label="تحديث بيانات (الوارد حديثا)"
-          uploadUrl="https://script.google.com/macros/s/AKfycbyFtjKKAeuB1mDqVhNClaSUe8PKlovPU9b_fSAjhofHH4MMVbrevr6nwebqOrTBk_UG/exec"
+          uploadUrl="https://script.google.com/macros/s/AKfycbxuM4mSVmqiDLvNhf1KenWcJmk3xqILgETKBBRl4DdKDw12TzeKfpS4EG2QvZldp9LY/exec"
         />
 
         <ExcelUploader
           label="تحديث بيانات (العروض)"
-          uploadUrl="https://script.google.com/macros/s/AKfycbzu6ZTY9RmB0LvhrmnEPGN5L_n5eYUDPO4GNn4QRAvXzmFRV3dZub_FU_nkVYfzEGoz/exec"
+          uploadUrl="https://script.google.com/macros/s/AKfycbx3cFITtMJgeVBTv8DR3l4NX3xjqQ37L-5dSjkkKEGxxY2q3Z8G7ibwGtKKImQmG-K_/exec"
         />
       </div>
     </div>
